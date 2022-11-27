@@ -1,0 +1,29 @@
+{
+  "name": "yt-downloader-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.js",
+    "dev": "npx nodemon src/index.ts",
+    "socket-admin": "cd socket.io-admin-ui && npm run compile",
+    "build": "npx tsc -p .",
+    "expose": "npm run build && prisma db push && prisma generate && node dist/index.js",
+    "lint": "eslint . --ext .ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@ffmpeg/core": "^0.11.0",
+    "@ffmpeg/ffmpeg": "^0.11.6",
+    "cheerio": "1.0.0-rc.12",
+    "music-metadata": "^8.1.0",
+    "node-downloader-helper": "^2.1.5",
+    "nodejs-file-downloader": "^4.10.2",
+    "ytdl-core": "^4.11.2"
+  },
+  "devDependencies": {
+    "axios": "^1.2.0"
+  }
+}
