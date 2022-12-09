@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-
-	"github.com/gocolly/colly"
+	"log"
+	"net/http"
+	"yt-dl-server/router"
 )
 
-/*
 func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -19,28 +19,4 @@ func main() {
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
 	}
-}
-*/
-
-func main() {
-	c := colly.NewCollector()
-
-	c.OnResponse(func(r *colly.Response) {
-		fmt.Println("Visited", r.Request.URL)
-	})
-
-	c.OnHTML("div.content[data-name]", func(h *colly.HTMLElement) {
-		fmt.Println(h.Text)
-	})
-
-	c.OnScraped(func(r *colly.Response) {
-		fmt.Println("Finished", r.Request.URL)
-	})
-
-	c.OnError(func(r *colly.Response, err error) {
-		fmt.Println(err)
-	})
-
-	c.Visit("https://fmovies.to/home")
-
 }
