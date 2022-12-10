@@ -3,9 +3,9 @@ package router
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/gocolly/colly"
 )
 
@@ -18,19 +18,21 @@ type Movie struct {
 	Type     string   `json:Type`
 }
 
-type Respone struct {
-	Data   Movie
-	status string
+type cachedMovieList struct {
+	Date      string
+	movieList []Movie
 }
 
-func ExploreRouter(w http.ResponseWriter, r *http.Request) {
+var cachedMovie cachedMovieList
+
+func ExploreRouter(r *gin.Context) {
 	var recommendationList []string
-	params := r.URL.Query()
-	sectionId := params["id"]
+
+	params := r.Query("id")
 
 	//verify the query
-	if len(sectionId) == 0 {
-		fmt.Fprint(w, "NO ID")
+	if params == "" {
+		fmt.Fprint(r.Writer, "NO ID")
 		return
 	}
 
@@ -41,7 +43,7 @@ func ExploreRouter(w http.ResponseWriter, r *http.Request) {
 	})
 
 	//dyanamically add the section value to parse the dom without repetion
-	selector := fmt.Sprintf("section:nth-child(%s) > div.content:nth-child(2) > div.filmlist", sectionId[0])
+	selector := fmt.Sprintf("section:nth-child(%s) > div.content:nth-child(2) > div.filmlist", params)
 
 	c.OnHTML(selector, func(h *colly.HTMLElement) {
 
@@ -67,15 +69,15 @@ func ExploreRouter(w http.ResponseWriter, r *http.Request) {
 
 		})
 
-		fmt.Fprint(w, recommendationList)
+		fmt.Fprint(r.Writer, recommendationList)
 	})
 
 	c.OnScraped(func(r *colly.Response) {
 		fmt.Println("Finished", r.Request.URL)
 	})
 
-	c.OnError(func(r *colly.Response, err error) {
-		fmt.Fprintf(w, "Error")
+	c.OnError(func(k *colly.Response, err error) {
+		fmt.Fprintf(r.Writer, "Error")
 	})
 
 	c.Visit("https://fmovies.to/home")
