@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"yt-dl-server/router"
 
 	"github.com/gin-gonic/gin"
@@ -18,8 +19,15 @@ func main() {
 
 	r.GET("/explore", router.ExploreRouter)
 
-	if err := r.Run(":8080"); err != nil {
+	//port
+	port := os.Getenv("PORT")
+
+	if port == "" {
+		port = "8080"
+	}
+
+	if err := r.Run(":" + port); err != nil {
 		log.Panicf("error: %s", err)
 	}
-	fmt.Println("Server started at 8080")
+	fmt.Printf("Server started at %s", port)
 }
