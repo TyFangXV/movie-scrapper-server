@@ -18,6 +18,7 @@ func main() {
 	})
 
 	r.GET("/explore", router.ExploreRouter)
+	r.GET("/movieScrapper", router.MovieScreenParser)
 
 	//port
 	port := os.Getenv("PORT")
